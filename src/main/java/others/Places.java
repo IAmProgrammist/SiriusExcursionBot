@@ -8,7 +8,6 @@ public enum Places {
     FISHT,
     ICEBERG,
     BIG,
-    TENNIS_ACADEMY,
     F1,
     IMMERTINSKY,
     ZHD

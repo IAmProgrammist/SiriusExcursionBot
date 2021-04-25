@@ -1,12 +1,15 @@
 plugins {
     id 'java'
 }
-
-group 'org.example'
-version '1.0-SNAPSHOT'
+group 'rchat.info'
 
 repositories {
     mavenCentral()
+}
+
+configurations {
+    // configuration that holds jars to include in the jar
+    extraLibs
 }
 
 dependencies {
@@ -15,6 +18,20 @@ dependencies {
     implementation 'com.github.pengrad:java-telegram-bot-api:5.1.0'
     implementation 'org.json:json:20210307'
     implementation 'mysql:mysql-connector-java:8.0.24'
+    implementation group: 'commons-io', name: 'commons-io', version: '2.6'
+    extraLibs 'com.github.pengrad:java-telegram-bot-api:5.1.0'
+    extraLibs 'org.json:json:20210307'
+    extraLibs 'mysql:mysql-connector-java:8.0.24'
+    extraLibs group: 'commons-io', name: 'commons-io', version: '2.6'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'Main'
+    }
+    from {
+        configurations.extraLibs.collect { it.isDirectory() ? it : zipTree(it) }
+    }
 }
 
 test {

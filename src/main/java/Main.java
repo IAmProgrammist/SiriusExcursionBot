@@ -3,6 +3,7 @@ import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMediaGroup;
 import com.pengrad.telegrambot.request.SendPhoto;
+import org.apache.commons.io.FileUtils;
 import text.TextLangs;
 import text.TextManager;
 import text.TextTypes;
@@ -14,10 +15,7 @@ import com.pengrad.telegrambot.response.SendResponse;
 import others.MySQLHelper;
 import others.Places;
 
-import java.io.File;
-import java.net.URISyntaxException;
 import java.net.URL;
-import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,16 +59,16 @@ public class Main {
         init("config.properties");
         bot.setUpdatesListener(updates -> {
             for (Update update : updates) {
-                if (update.message().text() == null) {
-                    String sendString = textManager.getLine(TextTypes.NO_TEXT, TextLangs.RU);
-                    SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(), sendString));
-                    continue;
-                }
                 TextLangs lang;
-                if (update.message().from().languageCode().equalsIgnoreCase("ru")) {
+                if (update.message().from().languageCode() != null && update.message().from().languageCode().equalsIgnoreCase("ru")) {
                     lang = TextLangs.RU;
                 } else {
                     lang = TextLangs.EN;
+                }
+                if (update.message().text() == null) {
+                    String sendString = textManager.getLine(TextTypes.NO_TEXT, lang);
+                    SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(), sendString));
+                    continue;
                 }
                 Keyboard replyKeyboardMarkup = new ReplyKeyboardMarkup(
                         new String[]{textManager.getLine(TextTypes.ABOUT_TERRITORY_KB, lang),
@@ -79,7 +77,6 @@ public class Main {
                                 textManager.getLine(TextTypes.FISHT_KB, lang)},
                         new String[]{textManager.getLine(TextTypes.ICEBERG_KB, lang),
                                 textManager.getLine(TextTypes.BIG_KB, lang),
-                                textManager.getLine(TextTypes.TENNIS_ACADEMY_KB, lang),
                                 textManager.getLine(TextTypes.F1_KB, lang)},
                         new String[]{textManager.getLine(TextTypes.IMMERTINSKY_KB, lang),
                                 textManager.getLine(TextTypes.ZHD_KB, lang),
@@ -113,7 +110,7 @@ public class Main {
                         SendPhoto photo = null;
                         try {
                             URL j = Main.class.getClassLoader().getResource("images/top.jpg");
-                            photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                            photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                             photo.caption(sendString.toString());
                             photo.replyMarkup(replyKeyboardMarkup);
                             bot.execute(photo);
@@ -157,7 +154,7 @@ public class Main {
                         SendPhoto photo = null;
                         try {
                             URL j = Main.class.getClassLoader().getResource("images/top.jpg");
-                            photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                            photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                             photo.caption(sendString.toString());
                             photo.replyMarkup(replyKeyboardMarkup);
                             bot.execute(photo);
@@ -173,7 +170,7 @@ public class Main {
                     SendPhoto photo = null;
                     try {
                         URL j = Main.class.getClassLoader().getResource("images/territory.png");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(textManager.getLine(TextTypes.ABOUT_TERRITORY_DESC, lang));
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -204,7 +201,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.ABOUT_KAVKAZ_DESC1, lang));
                         URL j = Main.class.getClassLoader().getResource("images/kavk1.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -226,7 +223,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.ABOUT_KAVKAZ_DESC2, lang));
                         URL j = Main.class.getClassLoader().getResource("images/kavk2.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -248,7 +245,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.ABOUT_KAVKAZ_DESC3, lang));
                         URL j = Main.class.getClassLoader().getResource("images/kavk3.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -270,7 +267,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.ABOUT_KAVKAZ_DESC4, lang));
                         URL j = Main.class.getClassLoader().getResource("images/kavk4.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -306,7 +303,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.OLYMP_PARK_DESC1, lang));
                         URL j = Main.class.getClassLoader().getResource("images/olymp.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -342,7 +339,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.FISHT_DESC1, lang));
                         URL j = Main.class.getClassLoader().getResource("images/fisht.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -378,7 +375,7 @@ public class Main {
                         StringBuilder sendString = new StringBuilder();
                         sendString.append(textManager.getLine(TextTypes.ICEBERG_DESC1, lang));
                         URL j = Main.class.getClassLoader().getResource("images/iceberg.jpg");
-                        photo = new SendPhoto(update.message().chat().id(), new File(j.toURI()));
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
                         photo.caption(sendString.toString());
                         photo.replyMarkup(replyKeyboardMarkup);
                         bot.execute(photo);
@@ -409,17 +406,213 @@ public class Main {
                         throwables.printStackTrace();
                     }
                 } else if (update.message().text().equals(textManager.getLine(TextTypes.BIG_KB, lang))) {
+                    SendPhoto photo = null;
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.BIG_DESC1, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/big1.jpg");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.BIG_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.BIG_DESC1, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.BIG_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
 
-                } else if (update.message().text().equals(textManager.getLine(TextTypes.TENNIS_ACADEMY_KB, lang))) {
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.BIG_DESC3, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/big2.jpg");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.BIG_DESC4, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.BIG_DESC3, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.BIG_DESC4, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
 
+                    try {
+                        ArrayList<Places> pl = visits.getOrDefault(update.message().from().id(), new ArrayList<>());
+                        if(!pl.contains(Places.BIG)) {
+                            MySQLHelper.writeVisit(update.message().from().id(), Places.BIG);
+                            pl.add(Places.BIG);
+                            visits.put(update.message().from().id(), pl);
+                        }
+                    } catch (Exception throwables) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while writing visits. " +
+                                "Stacktrace: ");
+                        throwables.printStackTrace();
+                    }
                 } else if (update.message().text().equals(textManager.getLine(TextTypes.F1_KB, lang))) {
+                    SendPhoto photo = null;
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.F1_DESC1, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/f1.jpg");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.F1_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.F1_DESC1, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.F1_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
 
+                    try {
+                        ArrayList<Places> pl = visits.getOrDefault(update.message().from().id(), new ArrayList<>());
+                        if(!pl.contains(Places.F1)) {
+                            MySQLHelper.writeVisit(update.message().from().id(), Places.F1);
+                            pl.add(Places.F1);
+                            visits.put(update.message().from().id(), pl);
+                        }
+                    } catch (Exception throwables) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while writing visits. " +
+                                "Stacktrace: ");
+                        throwables.printStackTrace();
+                    }
                 } else if (update.message().text().equals(textManager.getLine(TextTypes.IMMERTINSKY_KB, lang))) {
+                    SendPhoto photo = null;
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.IMMERTINSKY_DESC1, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/im1.jpg");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.IMMERTINSKY_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.IMMERTINSKY_DESC1, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.IMMERTINSKY_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
 
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.IMMERTINSKY_DESC3, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/im2.jpg");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.IMMERTINSKY_DESC4, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.IMMERTINSKY_DESC3, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.IMMERTINSKY_DESC4, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        ArrayList<Places> pl = visits.getOrDefault(update.message().from().id(), new ArrayList<>());
+                        if (!pl.contains(Places.IMMERTINSKY)) {
+                            MySQLHelper.writeVisit(update.message().from().id(), Places.IMMERTINSKY);
+                            pl.add(Places.IMMERTINSKY);
+                            visits.put(update.message().from().id(), pl);
+                        }
+                    } catch (Exception throwables) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while writing visits. " +
+                                "Stacktrace: ");
+                        throwables.printStackTrace();
+                    }
                 } else if (update.message().text().equals(textManager.getLine(TextTypes.ZHD_KB, lang))) {
+                    SendPhoto photo = null;
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.ZHD_DESC1, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/zhd1.png");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.ZHD_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.ZHD_DESC1, lang) + "\n\n" +
+                                        textManager.getLine(TextTypes.ZHD_DESC2, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
 
+                    try {
+                        StringBuilder sendString = new StringBuilder();
+                        sendString.append(textManager.getLine(TextTypes.ZHD_DESC3, lang));
+                        URL j = Main.class.getClassLoader().getResource("images/zhd2.png");
+                        photo = new SendPhoto(update.message().chat().id(), j.openStream().readAllBytes());
+                        photo.caption(sendString.toString());
+                        photo.replyMarkup(replyKeyboardMarkup);
+                        bot.execute(photo);
+                    } catch (Exception e) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while sending an image. " +
+                                "Stacktrace: ");
+                        e.printStackTrace();
+                        SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(),
+                                textManager.getLine(TextTypes.ZHD_DESC3, lang))
+                                .replyMarkup(replyKeyboardMarkup));
+                        e.printStackTrace();
+                    }
+
+                    try {
+                        ArrayList<Places> pl = visits.getOrDefault(update.message().from().id(), new ArrayList<>());
+                        if (!pl.contains(Places.ZHD)) {
+                            MySQLHelper.writeVisit(update.message().from().id(), Places.ZHD);
+                            pl.add(Places.ZHD);
+                            visits.put(update.message().from().id(), pl);
+                        }
+                    } catch (Exception throwables) {
+                        Logger.getLogger("Telegram Bot").log(Level.WARNING, "Got error while writing visits. " +
+                                "Stacktrace: ");
+                        throwables.printStackTrace();
+                    }
                 } else {
-                    String sendString = textManager.getLine(TextTypes.UNRECOGNIZED, TextLangs.RU);
+                    String sendString = textManager.getLine(TextTypes.UNRECOGNIZED, lang);
                     SendResponse toSend = bot.execute(new SendMessage(update.message().chat().id(), sendString).replyMarkup(replyKeyboardMarkup));
                 }
             }

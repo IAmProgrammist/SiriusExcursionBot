@@ -14,7 +14,6 @@ public enum TextTypes {
     FISHT_KB,
     ICEBERG_KB,
     BIG_KB,
-    TENNIS_ACADEMY_KB,
     F1_KB,
     IMMERTINSKY_KB,
     ZHD_KB,
@@ -32,5 +31,18 @@ public enum TextTypes {
     FISHT_DESC1,
     FISHT_DESC2,
     ICEBERG_DESC1,
-    ICEBERG_DESC2
+    ICEBERG_DESC2,
+    BIG_DESC1,
+    BIG_DESC2,
+    BIG_DESC3,
+    BIG_DESC4,
+    F1_DESC1,
+    F1_DESC2,
+    IMMERTINSKY_DESC1,
+    IMMERTINSKY_DESC2,
+    IMMERTINSKY_DESC3,
+    IMMERTINSKY_DESC4,
+    ZHD_DESC1,
+    ZHD_DESC2,
+    ZHD_DESC3
 }
